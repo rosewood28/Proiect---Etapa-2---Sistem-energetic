@@ -9,6 +9,7 @@ import methods.TransformIO;
 import methods.TransformIU;
 
 import newmethods.MonthlyStats;
+import newmethods.ObserverNotify;
 import output.ConsumerOut;
 import output.DistributorOut;
 import output.Output;
@@ -46,7 +47,6 @@ public final class Main {
         List<ConsumerIn> consumers0 = input.getInitialData().getConsumers();
         List<DistributorIn> distributors0 = input.getInitialData().getDistributors();
         List<ProducerIn> producers0 = input.getInitialData().getProducers();
-
 
         TransformIU auxTransformIU = new TransformIU();
         List<entities.Consumer> consumers1 = auxTransformIU.transformConsumers(consumers0);
@@ -95,7 +95,12 @@ public final class Main {
         //Initializez actualizarile lunare si listele aferente acesteia
         MonthlyUpdates actualUpdate;
         List<NewConsumers> newConsumers;
-        List<DistributorChanges> costsChanges;
+        List<DistributorChanges> distributorChanges;
+
+        ProducerChanges observable = new ProducerChanges();
+        for (Producer producer : producers1) {
+            observable.addObserver(producer);
+        }
 
         for (long i = 1; i <= numberOfTurns; i++) {
             //Verific daca toti distribuitorii au dat faliment si opresc simularea in acest caz
@@ -108,7 +113,7 @@ public final class Main {
             //Citesc updateuri
             actualUpdate = monthlyUpdates.get((int) i - 1); //update al lunii
             newConsumers = actualUpdate.getNewConsumers(); //noii consumatori
-            costsChanges = actualUpdate.getDistributorChanges(); //schimbarile de cost din runda
+            distributorChanges = actualUpdate.getDistributorChanges(); //schimbarile de cost
 
             //Adaugare noi consumatori
             AddNewConsumers aux = new AddNewConsumers();
@@ -116,7 +121,7 @@ public final class Main {
 
             //Actualizare preturi
             ChangeCosts auxCost = new ChangeCosts();
-            distributors1 = auxCost.changeCosts(distributors1, costsChanges);
+            distributors1 = auxCost.changeCosts(distributors1, distributorChanges);
 
             //Verificarea starii consumatorilor
             VerifyConsumers auxVerify = new VerifyConsumers();
@@ -149,6 +154,17 @@ public final class Main {
             //Platesc distribuitorii
             auxDistributorsPay = new DistributorsPay();
             distributors1 = auxDistributorsPay.distributorsPay(distributors1);
+
+            //de aici e cu producatori
+            List<ProducerChanges> producerChanges;
+            producerChanges = actualUpdate.getProducerChanges(); //schimbarile de energie
+
+            //se actualizează valorile citite din test pentru luna aceasta pentru producători
+            if (producerChanges.size() != 0) {
+                ObserverNotify observerNotify = new ObserverNotify();
+                observerNotify.observerNotify(producers1, producerChanges, observable, distributors1);
+                auxProductionCost.getProductionCost(distributors1);
+            }
 
             //MonthlyStats
             MonthlyStats auxMonthlyStats = new MonthlyStats();

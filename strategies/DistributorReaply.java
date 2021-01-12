@@ -5,9 +5,9 @@ import entities.Producer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.DeflaterInputStream;
 
-public class ChooseProducer {
-
+public class DistributorReaply {
     private Context context;
     private Strategy strategy;
     private List<Producer> choosedProducers = new ArrayList<>();
@@ -15,32 +15,32 @@ public class ChooseProducer {
     /**
      * Alege strategia in functie de distribuotor si o aplica listei de producatori
      * Distribuitorul isi alege producatori pana cand atinge cantitatea de energie necesara
-     * @param distributors lista
+     * @param distributor lista
      * @param producers lista
      */
-    public void chooseProducers(final List<Distributor> distributors,
-                                                                final List<Producer> producers) {
-        for (Distributor distributor : distributors) {
-            switch (distributor.getProducerStrategy()) {
-                case "GREEN" -> context = new Context(new GreenStrategy());
-                case "PRICE" -> context = new Context(new PriceStrategy());
-                case "QUANTITY" -> context = new Context(new QuantityStrategy());
-                default -> System.out.println("Cazul nu reprezinta o stategie");
-            }
+    public void reaplyStrategy(Distributor distributor,
+                                final List<Producer> producers) {
 
-            //sortez lista de producatori in functie de strategia distribuitorului
-            List<Producer> sortedProducers = context.executeStrategy(producers);
+        distributor.getProducers().clear();
+        switch (distributor.getProducerStrategy()) {
+            case "GREEN" -> context = new Context(new GreenStrategy());
+            case "PRICE" -> context = new Context(new PriceStrategy());
+            case "QUANTITY" -> context = new Context(new QuantityStrategy());
+            default -> System.out.println("Cazul nu reprezinta o stategie");
+        }
 
-            //adaug primul producator din lista sortata in lista distribuitorului, doar daca nu a
-            //atins deja numarul maxim de distribuitori
-            int i = 0;
-            Producer currentProducer = sortedProducers.get(i);
+        //sortez lista de producatori in functie de strategia distribuitorului
+        List<Producer> sortedProducers = context.executeStrategy(producers);
 
-            if (currentProducer.getDistributors().size() == currentProducer.getMaxDistributors()) {
-                break;
-            }
+        //adaug primul producator din lista sortata in lista distribuitorului, doar daca nu a
+        //atins deja numarul maxim de distribuitori
+        int i = 0;
+        Producer currentProducer = sortedProducers.get(i);
+
+        if (currentProducer.getDistributors().size() < currentProducer.getMaxDistributors()) {
 
             choosedProducers.add(currentProducer);
+
             int alreadyExists = 0;
             for (Distributor distributor1 : currentProducer.getDistributors()) {
                 if (distributor1.getId() == distributor.getId()) {
@@ -51,7 +51,6 @@ public class ChooseProducer {
                 currentProducer.getDistributors().add(distributor);
             }
 
-
             //verific daca acest producator ii poate oferi intrega energie si daca nu, mai adaug
             //producatori
             long neededEnergy = distributor.getEnergyNeededKW();
@@ -60,7 +59,6 @@ public class ChooseProducer {
                 i++;
                 currentProducer = sortedProducers.get(i);
                 choosedProducers.add(currentProducer);
-
                 alreadyExists = 0;
                 for (Distributor distributor1 : currentProducer.getDistributors()) {
                     if (distributor1.getId() == distributor.getId()) {
@@ -70,11 +68,11 @@ public class ChooseProducer {
                 if (alreadyExists != 1) {
                     currentProducer.getDistributors().add(distributor);
                 }
-
                 offeredEnergy += currentProducer.getEnergyPerDistributor();
             }
             distributor.getProducers().addAll(choosedProducers);
             choosedProducers.clear();
         }
     }
+
 }

@@ -22,20 +22,25 @@ public class GreenStrategy implements Strategy {
             @Override
             public int compare(Producer p1, Producer p2) {
                 if (p1.getEnergyType().isRenewable() && !p2.getEnergyType().isRenewable()) {
-                    ret = 1;
-                } else if (!p1.getEnergyType().isRenewable() && p2.getEnergyType().isRenewable()) {
                     ret = -1;
+                } else if (!p1.getEnergyType().isRenewable() && p2.getEnergyType().isRenewable()) {
+                    ret = 1;
                 } else { //daca au acelasi tip de energie, soarteaza dupa pret
-                    if (p1.getPriceKW() < p2.getPriceKW()) {
+                    if (p1.getPriceKW() > p2.getPriceKW()) {
                         ret = 1;
-                    } else if (p1.getPriceKW() > p2.getPriceKW()) {
+                    } else if (p1.getPriceKW() < p2.getPriceKW()) {
                         ret = -1;
-                    } else { //daca au acelasi pret, sorteaza dupa energie
-                        if (p1.getEnergyPerDistributor() != p2.getEnergyPerDistributor()) {
-                            ret = (int)
-                                    (p2.getEnergyPerDistributor() - p1.getEnergyPerDistributor());
+                    } else {
+                        if (p1.getEnergyPerDistributor() > p2.getEnergyPerDistributor()) {
+                            ret = -1;
+                        } else if (p1.getEnergyPerDistributor() < p2.getEnergyPerDistributor()) {
+                            ret = 1;
                         } else { //daca au aceeasi cantitate, sorteaza dupa id
-                            ret = (int) (p1.getId() - p2.getId());
+                            if (p1.getId() < p2.getId()) {
+                                ret = -1;
+                            } else if (p1.getId() > p2.getId()) {
+                                ret = 1;
+                            }
                         }
                     }
                 }

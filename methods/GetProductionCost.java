@@ -22,5 +22,6 @@ public class GetProductionCost {
             long productionCost = Math.round(Math.floor(cost / CONSTANT));
             distributor.setProductionCost(productionCost);
         }
+        cost = 0;
     }
 }

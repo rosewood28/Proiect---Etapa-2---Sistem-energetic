@@ -32,6 +32,8 @@ public class DeleteContracts {
                 contracts.remove(contract);
                 i--;
                 distributor.setNumberOfConsumers(distributor.getNumberOfConsumers() - 1);
+
+                    consumer.setOldContract(contract);
             }
         }
     }

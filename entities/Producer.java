@@ -1,9 +1,13 @@
 package entities;
 
+import input.ProducerChanges;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Producer {
+public class Producer implements Observer {
     private long id;
     private EnergyType energyType;
     private long maxDistributors;
@@ -11,6 +15,26 @@ public class Producer {
     private long energyPerDistributor;
     private List<Distributor> distributors = new ArrayList<>();
     private List<MonthlyStat> monthlyStats = new ArrayList<>();
+    private ProducerChanges producerChanges;
+
+    //pentru observer
+    @Override
+    public void update(Observable observable, Object producerChanges) {
+        this.producerChanges = (ProducerChanges) producerChanges;
+        if(this.getId() == this.producerChanges.getId()) {
+            this.setEnergyPerDistributor(this.producerChanges.getEnergyPerDistributor());
+        }
+
+    }
+
+    public ProducerChanges getChanges() {
+        if (this.producerChanges != null) {
+            System.out.println("id " + producerChanges.getId() + ", energy "
+                    + producerChanges.getEnergyPerDistributor());
+        }
+        return this.producerChanges;
+    }
+
 
     /**
      * @param id of producer

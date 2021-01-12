@@ -8,6 +8,7 @@ public class Consumer {
     private int penalty = 0; //initializat la 0
     private int delay = 0; //initializat la 0
     private Contract contract = null; //initializat la null
+    private Contract oldContract = null; //initializat la null
 
     /**
      * id of consumer
@@ -61,6 +62,12 @@ public class Consumer {
         this.contract = contract;
     }
 
+    /**
+     * @param oldContract of consumer
+     */
+    public void setOldContract(final Contract oldContract) {
+        this.oldContract = oldContract;
+    }
 
     /**
      * @return the id of consumer
@@ -111,4 +118,10 @@ public class Consumer {
         return contract;
     }
 
+    /**
+     * @return oldContract
+     */
+    public Contract getOldContract() {
+        return oldContract;
+    }
 }

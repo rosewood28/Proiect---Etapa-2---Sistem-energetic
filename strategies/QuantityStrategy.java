@@ -21,10 +21,16 @@ public class QuantityStrategy implements Strategy {
         Collections.sort(quantitySorted, new Comparator<>() {
             @Override
             public int compare(Producer p1, Producer p2) {
-                if (p1.getEnergyPerDistributor() != p2.getEnergyPerDistributor()) {
-                    ret = (int) (p2.getEnergyPerDistributor() - p1.getEnergyPerDistributor());
-                } else { //daca au aceeasi cantitate, sorteaza crescator dupa id
-                    ret = (int) (p1.getId() - p2.getId());
+                if (p1.getEnergyPerDistributor() > p2.getEnergyPerDistributor()) {
+                    ret = -1;
+                } else if (p1.getEnergyPerDistributor() < p2.getEnergyPerDistributor()) {
+                    ret = 1;
+                } else { //daca au aceeasi cantitate, sorteaza dupa id
+                    if (p1.getId() < p2.getId()) {
+                        ret = -1;
+                    } else if (p1.getId() > p2.getId()) {
+                        ret = 1;
+                    }
                 }
                 return ret;
             }

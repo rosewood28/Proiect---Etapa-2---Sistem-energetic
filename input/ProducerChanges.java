@@ -1,8 +1,17 @@
 package input;
 
-public class ProducerChanges {
+
+import java.util.Observable;
+
+public class ProducerChanges extends Observable {
     private long id;
     private long energyPerDistributor;
+
+    public void setChanges(ProducerChanges producerChanges) {
+        setChanged();
+        notifyObservers(producerChanges);
+    }
+
 
     /**
      * @param id of producer is set

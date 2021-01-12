@@ -25,11 +25,42 @@ public class ConsumersPay {
                             consumer.setDelay(1);
                         }
                     } else { //daca are penalty
-                        if (budget > (price + consumer.getPenalty())) {
-                            //daca are bani, plateste tot si scapa de amanare
-                            consumer.setBudget(budget - price - consumer.getPenalty());
-                        } else { //daca nu are bani, da faliment
-                            consumer.setIsBankrupt(true);
+                        if (contract.getRemainedContractMonths() != 0) {
+                            if (budget > (price + consumer.getPenalty())) {
+                                //daca are bani, plateste tot si scapa de amanare
+                                consumer.setBudget(budget - price - consumer.getPenalty());
+                                consumer.setDelay(0);
+                            } else { //daca nu are bani, da faliment
+                                consumer.setIsBankrupt(true);
+                            }
+                        } else if (contract.getRemainedContractMonths() == 0) {
+                            if (contract.getDistributor().getId()
+                                    == consumer.getOldContract().getDistributor().getId()) {
+                                //daca noul contract este la acelasi distribuitor
+                                if (budget > (price + consumer.getPenalty() +
+                                        consumer.getOldContract().getPrice())) {
+                                    consumer.setBudget(budget - price - consumer.getPenalty() -
+                                            consumer.getOldContract().getPrice());
+                                } else {
+                                    consumer.setIsBankrupt(true);
+                                }
+                            } else {
+                                //daca noul contract este la alt distribuitor
+                                if (budget > (price + consumer.getPenalty() +
+                                        consumer.getOldContract().getPrice())) {
+                                    consumer.setBudget(budget - price - consumer.getPenalty() -
+                                            consumer.getOldContract().getPrice());
+                                    consumer.setDelay(0);
+                                } else if (budget > (consumer.getOldContract().getPrice()
+                                                    + consumer.getPenalty())) {
+                                    consumer.setBudget(budget - consumer.getOldContract().getPrice()
+                                            - consumer.getPenalty());
+                                    final double constant = 1.2;
+                                    consumer.setPenalty((int) (constant * price));
+                                } else {
+                                    consumer.setIsBankrupt(true);
+                                }
+                            }
                         }
                     }
                 }

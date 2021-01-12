@@ -21,13 +21,23 @@ public class PriceStrategy implements Strategy {
         Collections.sort(priceSorted, new Comparator<>() {
             @Override
             public int compare(Producer p1, Producer p2) {
-                if (p1.getPriceKW() != p2.getPriceKW()) {
-                    ret = (int) (p1.getPriceKW() - p2.getPriceKW());
-                } else { //daca au acelasi pret, sorteaza dupa energie
-                    if (p1.getEnergyPerDistributor() != p2.getEnergyPerDistributor()) {
-                        ret = (int) (p2.getEnergyPerDistributor() - p1.getEnergyPerDistributor());
+                if (p1.getPriceKW() > p2.getPriceKW()) {
+                    ret = 1;
+                } else if (p1.getPriceKW() < p2.getPriceKW()) {
+                    ret = -1;
+                } else {
+                    if (p1.getEnergyPerDistributor() > p2.getEnergyPerDistributor()) {
+                        ret = -1;
+                    } else if (p1.getEnergyPerDistributor() < p2.getEnergyPerDistributor()) {
+                        ret = 1;
                     } else { //daca au aceeasi cantitate, sorteaza dupa id
-                        ret = (int) (p1.getId() - p2.getId());
+                        if (p1.getId() < p2.getId()) {
+                            ret = -1;
+                        } else if (p1.getId() > p2.getId()) {
+                            ret = 1;
+                        } else {
+                            ret = 0;
+                        }
                     }
                 }
                 return ret;
