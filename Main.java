@@ -15,6 +15,7 @@ import output.DistributorOut;
 import output.Output;
 import output.ProducerOut;
 import strategies.ChooseProducer;
+import strategies.DistributorReaply;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public final class Main {
      */
     public static void main(final String[] args) throws Exception {
         String inputFilename = args[0];
+        //inputFilename = "checker/resources/in/complex_2.json";
         String outputFilename = args[1];
 
         //Citesc datele de intrare
@@ -172,6 +174,7 @@ public final class Main {
 
             //decrementez numarul de luni
             decrementRemainedMonths.decrementRemainedMonths(contracts);
+            int check =1;
         }
 
         //Transformare distribuitori in in distribuitori out, analaog pentru consumatori

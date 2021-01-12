@@ -16,12 +16,15 @@ public class GetProductionCost {
      */
     public void getProductionCost(List<Distributor> distributors) {
         for (Distributor distributor : distributors) {
-            for (Producer producer : distributor.getProducers()) {
-                cost += producer.getEnergyPerDistributor() * producer.getPriceKW();
+            if (distributor.getProducers().size() != 0) {
+                cost = 0;
+                for (Producer producer : distributor.getProducers()) {
+                    cost += producer.getEnergyPerDistributor() * producer.getPriceKW();
+                }
+                long productionCost = Math.round(Math.floor(cost / CONSTANT));
+                distributor.setProductionCost(productionCost);
             }
-            long productionCost = Math.round(Math.floor(cost / CONSTANT));
-            distributor.setProductionCost(productionCost);
         }
-        cost = 0;
+
     }
 }
