@@ -1,4 +1,4 @@
-package methods;
+package transform;
 
 import entities.Consumer;
 import entities.Distributor;
@@ -14,7 +14,7 @@ import java.util.List;
 public class TransformIU {
     /**
      * @param consumersIN consumatori de tip input
-     * @return Consumator
+     * @return consumers
      */
     public List<Consumer>
     transformConsumers(final List<ConsumerIn> consumersIN) {
@@ -35,7 +35,7 @@ public class TransformIU {
 
     /**
      * @param distributorsIN distribuitori de tip distributors
-     * @return lista de Distributor
+     * @return distributors
      */
     public List<Distributor>
     transformDistributors(final List<DistributorIn> distributorsIN) {

@@ -11,24 +11,21 @@ public class Consumer {
     private Contract oldContract = null; //initializat la null
 
     /**
-     * id of consumer
-     * @param id is set
+     * @param id of consumer
      */
     public void setId(final long id) {
         this.id = id;
     }
 
     /**
-     * initialBudget of consumer
-     * @param budget is set
+     * @param budget of consumer
      */
     public void setBudget(final long budget) {
         this.budget = budget;
     }
 
     /**
-     * monthlyIncome of consumer
-     * @param monthlyIncome is set
+     * @param monthlyIncome of consumer
      */
     public void setMonthlyIncome(final long monthlyIncome) {
         this.monthlyIncome = monthlyIncome;
@@ -49,7 +46,7 @@ public class Consumer {
     }
 
     /**
-     * @param delay setted
+     * @param delay of consumer
      */
     public void setDelay(final int delay) {
         this.delay = delay;
@@ -70,21 +67,21 @@ public class Consumer {
     }
 
     /**
-     * @return the id of consumer
+     * @return id
      */
     public long getId() {
         return id;
     }
 
     /**
-     * @return the initialBudget of consumer
+     * @return initialBudget
      */
     public long getBudget() {
         return budget;
     }
 
     /**
-     * @return the monthlyIncome of consumer
+     * @return monthlyIncome
      */
     public long getMonthlyIncome() {
         return monthlyIncome;

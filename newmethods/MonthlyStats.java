@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MonthlyStats {
     /**
-     * Adauga in lista de stari ale producatorului si starea din luna curenta
+     * Adauga in lista de stari ale producatorului si starea din luna curenta.
      * @param numberOfMonth numarul lunii curente
      * @param producers lista de producatori
      */

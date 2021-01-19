@@ -9,9 +9,9 @@ import java.util.List;
 
 public class MakeContracts {
     /**
-     * @param consumers of contract
-     * @param bestDistributor of contract
-     * @param minPrice of distributor
+     * @param consumers al contractului
+     * @param bestDistributor al contractului
+     * @param minPrice al contractului
      */
     public void makeContracts(final List<Consumer> consumers, final Distributor bestDistributor,
                               final long minPrice, final ArrayList<Contract> contracts) {

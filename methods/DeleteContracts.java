@@ -7,21 +7,21 @@ import java.util.List;
 
 public class DeleteContracts {
     /**
-     * sterge contractele a caror consumator este bankrupt
+     * Sterge contractele a caror consumator/distribuitor este bankrupt sau contractele care
+     * au expirat.
      * @param contracts lista
      */
     public void deleteContracts(final List<Contract> contracts) {
-        for (int i = 0; i < contracts.size(); i++) { //parcurg lista de contracte si o actualizez
-            Contract contract = contracts.get(i); //contractul curent
-            Distributor distributor = contract.getDistributor(); //distribuitorul aferent
-            Consumer consumer = contract.getConsumer(); //consumatorul aferent
+        for (int i = 0; i < contracts.size(); i++) {
+            Contract contract = contracts.get(i);
+            Distributor distributor = contract.getDistributor();
+            Consumer consumer = contract.getConsumer();
             DeleteContract auxDeleteContract = new DeleteContract();
             if (consumer.getIsBankrupt()) {
                 auxDeleteContract.deleteContract(distributor, consumer, contract);
                 contracts.remove(contract);
                 distributor.setBudget(distributor.getBudget() - distributor.getProductionCost());
-                i--; //decrementez i pentru a accesa urmatorul element deoarece cel curent a fost
-                //sters si lista nu ar mai avea de unde sa continue accesarea
+                i--;
                 distributor.setNumberOfConsumers(distributor.getNumberOfConsumers() - 1);
             } else if (distributor.getIsBankrupt()) {
                 auxDeleteContract.deleteContract(distributor, consumer, contract);
@@ -32,8 +32,7 @@ public class DeleteContracts {
                 contracts.remove(contract);
                 i--;
                 distributor.setNumberOfConsumers(distributor.getNumberOfConsumers() - 1);
-
-                    consumer.setOldContract(contract);
+                consumer.setOldContract(contract);
             }
         }
     }

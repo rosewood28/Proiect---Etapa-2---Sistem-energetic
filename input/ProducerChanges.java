@@ -7,11 +7,14 @@ public class ProducerChanges extends Observable {
     private long id;
     private long energyPerDistributor;
 
+    /**
+     * Pentru observer, notifica toti observatorii.
+     * @param producerChanges schimbarile date de sitemul de simulare
+     */
     public void setChanges(ProducerChanges producerChanges) {
         setChanged();
         notifyObservers(producerChanges);
     }
-
 
     /**
      * @param id of producer is set

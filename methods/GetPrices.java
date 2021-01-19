@@ -11,13 +11,14 @@ public class GetPrices {
     private final HashMap<Distributor, Long> prices = new HashMap<>();
 
     /**
+     * Calculeaza toate preturile oferite de distribuitori si le adauga intr-un HashMap.
      * @param distributors lista de distribuitori
      */
     public void getPricesMap(final List<Distributor> distributors) {
         for (Distributor distributor : distributors) {
             if (!distributor.getIsBankrupt()) {
                 long infrastructureCost = distributor.getInfrastructureCost();
-                long numberConsumers = distributor.getNumberOfConsumers(); //cons de luna trecuta
+                long numberConsumers = distributor.getNumberOfConsumers(); //de luna trecuta
                 long productionCost = distributor.getProductionCost();
                 final double constant = 0.2;
                 long profit = Math.round(Math.floor(constant * productionCost));
@@ -29,7 +30,7 @@ public class GetPrices {
                     price = infrastructureCost + productionCost + profit;
                 }
                 distributor.setContractCost(price);
-                this.prices.put(distributor, price); //incarc mapul
+                this.prices.put(distributor, price);
             }
         }
     }
@@ -49,12 +50,14 @@ public class GetPrices {
         Distributor ret = null;
         long minId = BIG_NUMBER;
         for (Map.Entry<Distributor, Long> mapElement : this.prices.entrySet()) {
-            if (!mapElement.getKey().getIsBankrupt()) { //distr trebuie sa nu fie falimentat
+            if (!mapElement.getKey().getIsBankrupt()) {
                 if (mapElement.getValue() == minPrice) {
                     long id = mapElement.getKey().getId();
-                    if (id < minId) { //daca mai multi distribuitori au acelasi pret
+                    //daca mai multi distribuitori au acelasi pret aleg distribuitorul cu cel mai
+                    //mic id
+                    if (id < minId) {
                         minId = id;
-                        ret = mapElement.getKey(); //aleg distribuitorul cu cel mai mic id
+                        ret = mapElement.getKey();
                     }
                 }
             }
@@ -62,6 +65,5 @@ public class GetPrices {
 
         return ret;
     }
-
 
 }

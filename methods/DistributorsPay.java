@@ -5,7 +5,9 @@ import java.util.List;
 
 public class DistributorsPay {
     /**
-     * @param distributorsList list
+     * Calculare cost pentru fiecare distribuitor. Distribuitorii platesc costul calculat sau intra
+     * in faliment.
+     * @param distributorsList lista de distribuitori
      * @return lista de distribuitori cu bugetele actualizate
      */
     public List<Distributor> distributorsPay(final List<Distributor> distributorsList) {

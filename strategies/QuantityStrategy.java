@@ -10,6 +10,8 @@ import java.util.List;
 public class QuantityStrategy implements Strategy {
     private List<Producer> quantitySorted = new ArrayList<>();
     private int ret;
+    private int constant = 1;
+    private int negativeConstant = -1;
 
     /**
      * Sorteaza lista de producatori descrescator dupa cantitate si apoi dupa id
@@ -22,14 +24,14 @@ public class QuantityStrategy implements Strategy {
             @Override
             public int compare(Producer p1, Producer p2) {
                 if (p1.getEnergyPerDistributor() > p2.getEnergyPerDistributor()) {
-                    ret = -1;
+                    ret = negativeConstant;
                 } else if (p1.getEnergyPerDistributor() < p2.getEnergyPerDistributor()) {
-                    ret = 1;
+                    ret = constant;
                 } else { //daca au aceeasi cantitate, sorteaza dupa id
                     if (p1.getId() < p2.getId()) {
-                        ret = -1;
+                        ret = negativeConstant;
                     } else if (p1.getId() > p2.getId()) {
-                        ret = 1;
+                        ret = constant;
                     }
                 }
                 return ret;
@@ -38,6 +40,5 @@ public class QuantityStrategy implements Strategy {
 
         return quantitySorted;
     }
-
 
 }

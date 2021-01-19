@@ -1,4 +1,4 @@
-package methods;
+package transform;
 
 import entities.Consumer;
 import entities.Distributor;

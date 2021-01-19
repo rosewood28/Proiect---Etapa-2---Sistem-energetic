@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Salary {
     /**
-     * adauga salariul aferent fiecarui consumator din lista
+     * Adauga salariul aferent fiecarui consumator din lista.
      * @param pConsumers lista de consumatori
      * @return lista de consumatori cu salariul actualizat
      */

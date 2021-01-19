@@ -103,35 +103,35 @@ public class Distributor {
     }
 
     /**
-     * @return id of distributor
+     * @return id
      */
     public long getId() {
         return id;
     }
 
     /**
-     * @return contractLength of distributor
+     * @return contractLength
      */
     public long getContractLength() {
         return contractLength;
     }
 
     /**
-     * @return budget of distributor
+     * @return budget
      */
     public long getBudget() {
         return budget;
     }
 
     /**
-     * @return infrastructureCost  of distributor
+     * @return infrastructureCost
      */
     public long getInfrastructureCost() {
         return infrastructureCost;
     }
 
     /**
-     * @return productionCost  of distributor
+     * @return productionCost
      */
     public long getProductionCost() {
         return productionCost;

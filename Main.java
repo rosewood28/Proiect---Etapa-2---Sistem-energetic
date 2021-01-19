@@ -1,21 +1,34 @@
-import entities.*;
-import methods.*;
-import input.*;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import entities.Consumer;
+import entities.Distributor;
+import entities.Producer;
+import entities.Contract;
+import methods.AddNewConsumers;
+import methods.ChangeCosts;
+import methods.ConsumersPay;
+import methods.DecrementRemainedMonths;
+import methods.DeleteContracts;
+import methods.DistributorsPay;
+import methods.GetProductionCost;
+import methods.GetPrices;
+import methods.MakeContracts;
+import methods.Salary;
+import methods.Verify;
+import input.ConsumerIn;
+import input.DistributorChanges;
+import input.DistributorIn;
+import input.ProducerChanges;
+import input.ProducerIn;
+import input.NewConsumers;
+import input.MonthlyUpdates;
+import input.Input;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.fasterxml.jackson.databind.ObjectWriter;
-import methods.TransformIO;
-import methods.TransformIU;
+import transform.TransformIU;
 
 import newmethods.MonthlyStats;
 import newmethods.ObserverNotify;
-import output.ConsumerOut;
-import output.DistributorOut;
-import output.Output;
-import output.ProducerOut;
 import strategies.ChooseProducer;
-import strategies.DistributorReaply;
+import transform.Write;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,8 +49,6 @@ public final class Main {
      */
     public static void main(final String[] args) throws Exception {
         String inputFilename = args[0];
-        //inputFilename = "checker/resources/in/complex_2.json";
-        String outputFilename = args[1];
 
         //Citesc datele de intrare
         ObjectMapper mapIn = new ObjectMapper();
@@ -51,16 +62,16 @@ public final class Main {
         List<ProducerIn> producers0 = input.getInitialData().getProducers();
 
         TransformIU auxTransformIU = new TransformIU();
-        List<entities.Consumer> consumers1 = auxTransformIU.transformConsumers(consumers0);
-        List<entities.Distributor> distributors1 =
-                auxTransformIU.transformDistributors(distributors0);
-        List<entities.Producer> producers1 = auxTransformIU.transformProducers(producers0);
+        List<Consumer> consumers1 = auxTransformIU.transformConsumers(consumers0);
+        List<Distributor> distributors1;
+        distributors1 = auxTransformIU.transformDistributors(distributors0);
+        List<Producer> producers1 = auxTransformIU.transformProducers(producers0);
 
-        //alegere producatori
+        //Alegere producatori
         ChooseProducer auxChooseProducer = new ChooseProducer();
         auxChooseProducer.chooseProducers(distributors1, producers1);
 
-        //calculare cost de productie
+        //Calculare cost de productie
         GetProductionCost auxProductionCost = new GetProductionCost();
         auxProductionCost.getProductionCost(distributors1);
 
@@ -73,7 +84,7 @@ public final class Main {
         //Gasirea celui mai bun distribuitor
         entities.Distributor bestDistributor = auxPrices.getTheBestDistributor(minPrice);
 
-        //Consumatorii primesc salariu, verificat si merge bine
+        //Consumatorii primesc salariu
         Salary auxSalary = new Salary();
         consumers1 = auxSalary.getSalary(consumers1);
 
@@ -86,26 +97,27 @@ public final class Main {
         ConsumersPay auxConsumersPay1 = new ConsumersPay();
         auxConsumersPay1.consumersPay(contracts);
 
-        //Platesc distribuitorii, verificat si merge bine
+        //Platesc distribuitorii
         DistributorsPay auxDistributorsPay = new DistributorsPay();
         distributors1 = auxDistributorsPay.distributorsPay(distributors1);
 
-        //decrementez numarul de luni
+        //Decrementez numarul de luni
         DecrementRemainedMonths decrementRemainedMonths = new DecrementRemainedMonths();
         decrementRemainedMonths.decrementRemainedMonths(contracts);
 
-        //Initializez actualizarile lunare si listele aferente acesteia
+        //Initializez actualizarile lunare
         MonthlyUpdates actualUpdate;
         List<NewConsumers> newConsumers;
         List<DistributorChanges> distributorChanges;
 
+        //Adaugare observatori
         ProducerChanges observable = new ProducerChanges();
         for (Producer producer : producers1) {
             observable.addObserver(producer);
         }
 
         for (long i = 1; i <= numberOfTurns; i++) {
-            //Verific daca toti distribuitorii au dat faliment si opresc simularea in acest caz
+            //Daca toti distribuitorii au dat faliment, simularea se opreste
             Verify verify = new Verify();
             long stopDistributors = verify.verifyDistributors(distributors1);
             if (stopDistributors == 1) {
@@ -126,8 +138,7 @@ public final class Main {
             distributors1 = auxCost.changeCosts(distributors1, distributorChanges);
 
             //Verificarea starii consumatorilor
-            VerifyConsumers auxVerify = new VerifyConsumers();
-            auxVerify.verifyConsumers(consumers1);
+            verify.verifyConsumers(consumers1);
 
             //Calculare preturi pentru luna curenta
             auxPrices = new GetPrices();
@@ -142,7 +153,7 @@ public final class Main {
             auxSalary = new Salary();
             consumers1 = auxSalary.getSalary(consumers1);
 
-            //sterg contracte
+            //Stergere contracte care nu mai sunt valide
             DeleteContracts deleteContracts = new DeleteContracts();
             deleteContracts.deleteContracts(contracts);
 
@@ -157,40 +168,27 @@ public final class Main {
             auxDistributorsPay = new DistributorsPay();
             distributors1 = auxDistributorsPay.distributorsPay(distributors1);
 
-            //de aici e cu producatori
+            //Actualizare valori date de simulare pentru producatori
             List<ProducerChanges> producerChanges;
-            producerChanges = actualUpdate.getProducerChanges(); //schimbarile de energie
+            producerChanges = actualUpdate.getProducerChanges();
 
-            //se actualizează valorile citite din test pentru luna aceasta pentru producători
+            //Se notifica observatorii
             if (producerChanges.size() != 0) {
                 ObserverNotify observerNotify = new ObserverNotify();
-                observerNotify.observerNotify(producers1, producerChanges, observable, distributors1);
+                observerNotify.observerNotify(producers1, producerChanges, observable);
                 auxProductionCost.getProductionCost(distributors1);
             }
 
-            //MonthlyStats
+            //Salvare monthlyStat
             MonthlyStats auxMonthlyStats = new MonthlyStats();
             auxMonthlyStats.saveMonthlyStat(i, producers1);
 
-            //decrementez numarul de luni
+            //Decrementare numar de luni
             decrementRemainedMonths.decrementRemainedMonths(contracts);
-            int check =1;
         }
 
-        //Transformare distribuitori in in distribuitori out, analaog pentru consumatori
-        TransformIO auxTransform = new TransformIO();
-        List<DistributorOut> distributors = auxTransform.transformDistributors(distributors1);
-        List<ConsumerOut> consumers = auxTransform.transformConsumers(consumers1);
-        List<ProducerOut> producers = auxTransform.transformProducers(producers1);
-
-        Output output = new Output();
-        output.setConsumers(consumers);
-        output.setDistributors(distributors);
-        output.setEnergyProducers(producers);
-
-        ObjectMapper mapOut = new ObjectMapper();
-        ObjectWriter writer = mapOut.writer(new DefaultPrettyPrinter());
-
-        writer.writeValue(new File(outputFilename), output);
+        //Scriere in fisier
+        Write write = new Write();
+        write.writeToFile(args[1], consumers1, distributors1, producers1);
     }
 }

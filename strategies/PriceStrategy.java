@@ -25,7 +25,7 @@ public class PriceStrategy implements Strategy {
                     ret = 1;
                 } else if (p1.getPriceKW() < p2.getPriceKW()) {
                     ret = -1;
-                } else {
+                } else { //daca au acelasi pret, sorteaza dupa energie
                     if (p1.getEnergyPerDistributor() > p2.getEnergyPerDistributor()) {
                         ret = -1;
                     } else if (p1.getEnergyPerDistributor() < p2.getEnergyPerDistributor()) {

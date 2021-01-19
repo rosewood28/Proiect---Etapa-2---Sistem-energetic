@@ -17,21 +17,24 @@ public class Producer implements Observer {
     private List<MonthlyStat> monthlyStats = new ArrayList<>();
     private ProducerChanges producerChanges;
 
-    //pentru observer
+    /**
+     * Pentru observer, efectueaza schimbarile date de sistemul de simulare.
+     * @param observable observabil
+     * @param pProducerChanges object
+     */
     @Override
-    public void update(Observable observable, Object producerChanges) {
-        this.producerChanges = (ProducerChanges) producerChanges;
-        if(this.getId() == this.producerChanges.getId()) {
+    public void update(final Observable observable, final Object pProducerChanges) {
+        this.producerChanges = (ProducerChanges) pProducerChanges;
+        if (this.getId() == this.producerChanges.getId()) {
             this.setEnergyPerDistributor(this.producerChanges.getEnergyPerDistributor());
         }
 
     }
 
+    /**
+     * @return producerChanges
+     */
     public ProducerChanges getChanges() {
-        if (this.producerChanges != null) {
-            System.out.println("id " + producerChanges.getId() + ", energy "
-                    + producerChanges.getEnergyPerDistributor());
-        }
         return this.producerChanges;
     }
 
